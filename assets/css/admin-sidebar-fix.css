@@ -1,0 +1,139 @@
+/* ADMIN SIDEBAR FIX - HOSTING COMPATIBLE */
+
+/* Reset all sidebar positioning */
+.admin-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: -280px !important;
+    width: 280px !important;
+    height: 100vh !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    z-index: 1050 !important;
+    transition: left 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Mobile: Show sidebar when .show class is added */
+@media (max-width: 991.98px) {
+    .admin-sidebar.show {
+        left: 0 !important;
+        transform: translateX(0) !important;
+    }
+}
+
+/* Desktop: Always show sidebar */
+@media (min-width: 992px) {
+    .admin-sidebar {
+        left: 0 !important;
+        transform: translateX(0) !important;
+        transition: none !important;
+    }
+    
+    /* Adjust main content for sidebar */
+    .main-content {
+        margin-left: 280px !important;
+        width: calc(100% - 280px) !important;
+        padding: 2rem !important;
+        min-height: 100vh !important;
+        background: #f8fafc !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Adjust navbar for sidebar */
+    .admin-navbar {
+        margin-left: 280px !important;
+        width: calc(100% - 280px) !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* Sidebar content styling */
+.admin-sidebar .sidebar-header {
+    padding: 1.5rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+}
+
+.admin-sidebar .sidebar-body {
+    flex: 1 !important;
+    padding: 1rem 0 !important;
+    overflow-y: auto !important;
+    display: block !important;
+}
+
+.admin-sidebar .sidebar-nav {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.admin-sidebar .sidebar-nav-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1.5rem !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    border-left: 3px solid transparent !important;
+}
+
+.admin-sidebar .sidebar-nav-link:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-left-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.admin-sidebar .sidebar-nav-link.active {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-left-color: white !important;
+}
+
+.admin-sidebar .sidebar-nav-link i {
+    width: 20px !important;
+    margin-right: 0.75rem !important;
+    text-align: center !important;
+}
+
+.admin-sidebar .sidebar-footer {
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+}
+
+.admin-sidebar h5,
+.admin-sidebar .user-name,
+.admin-sidebar .user-role {
+    color: white !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .admin-sidebar {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+}
+
+/* Force visibility */
+.admin-sidebar,
+.admin-sidebar * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Hide old sidebar elements that might conflict */
+.sidebar {
+    display: none !important;
+}
+
+/* Ensure proper body layout */
+body.admin-body {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+}
