@@ -128,13 +128,136 @@
                 <h2 class="fw-bold">Produk Unggulan</h2>
                 <p class="text-muted">Pilihan terbaik untuk kebutuhan Anda</p>
             </div>
-            <div id="produk-unggulan" class="row">
-                <!-- Produk akan dimuat via JavaScript -->
-            </div>
-            <div id="view-more-container" class="text-center mt-4" style="display: none;">
-                <a href="produk.html" class="btn btn-primary btn-lg">
-                    Lihat Semua Produk <i class="fas fa-arrow-right ms-2"></i>
-                </a>
+            <div class="row">
+                <?php
+                // Load products directly from database
+                require_once 'config/database.php';
+                
+                try {
+                    $database = new Database();
+                    $db = $database->getConnection();
+                    
+                    // Query untuk mengambil 6 produk terbaru
+                    $query = "SELECT p.id, p.nama_produk, p.deskripsi_singkat, p.deskripsi, p.foto, p.created_at, 
+                                     p.category_id, c.nama_kategori, c.icon as category_icon
+                              FROM products p 
+                              LEFT JOIN categories c ON p.category_id = c.id 
+                              WHERE p.is_active = 1 
+                              ORDER BY p.created_at DESC 
+                              LIMIT 6";
+                    
+                    $stmt = $db->prepare($query);
+                    $stmt->execute();
+                    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    if (count($products) > 0) {
+                        foreach ($products as $product) {
+                            // Format tanggal
+                            $createdDate = date('d M Y', strtotime($product['created_at']));
+                            
+                            // WhatsApp link
+                            $whatsappText = urlencode("Halo admin, saya tertarik dengan produk {$product['nama_produk']}. Apakah masih tersedia?");
+                            $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
+                            
+                            // Check if needs detail button
+                            $needsDetailButton = strlen($product['deskripsi']) > strlen($product['deskripsi_singkat']) + 20;
+                            
+                            echo '<div class="col-lg-4 col-md-6 mb-4">';
+                            echo '<div class="card product-card h-100 shadow-sm" onclick="window.location.href=\'detail-produk.html?id=' . $product['id'] . '\'" style="cursor: pointer;">';
+                            
+                            // Image and badges
+                            echo '<div class="position-relative">';
+                            echo '<img src="' . htmlspecialchars($product['foto']) . '" class="card-img-top product-image" alt="' . htmlspecialchars($product['nama_produk']) . '" loading="lazy">';
+                            
+                            // Category badge
+                            if ($product['nama_kategori']) {
+                                echo '<div class="position-absolute top-0 start-0 m-2">';
+                                echo '<span class="badge bg-primary">';
+                                echo '<i class="' . ($product['category_icon'] ?: 'fas fa-tag') . ' me-1"></i>';
+                                echo htmlspecialchars($product['nama_kategori']);
+                                echo '</span>';
+                                echo '</div>';
+                            }
+                            
+                            // Date badge
+                            echo '<div class="position-absolute bottom-0 end-0 m-2">';
+                            echo '<small class="badge bg-dark bg-opacity-75">';
+                            echo '<i class="fas fa-calendar me-1"></i>' . $createdDate;
+                            echo '</small>';
+                            echo '</div>';
+                            echo '</div>';
+                            
+                            // Card body
+                            echo '<div class="card-body d-flex flex-column">';
+                            echo '<h5 class="card-title fw-bold">' . htmlspecialchars($product['nama_produk']) . '</h5>';
+                            
+                            // Description
+                            echo '<div class="product-description flex-grow-1">';
+                            echo '<div id="product-' . $product['id'] . '-short" class="description-short">';
+                            echo $product['deskripsi_singkat']; // Allow HTML
+                            echo '</div>';
+                            
+                            if ($needsDetailButton) {
+                                echo '<div id="product-' . $product['id'] . '-full" class="description-full" style="display: none;">';
+                                echo $product['deskripsi']; // Allow HTML
+                                echo '</div>';
+                                echo '<button class="btn btn-link p-0 mt-2 detail-toggle" onclick="event.stopPropagation(); toggleDescription(\'product-' . $product['id'] . '\')" id="product-' . $product['id'] . '-toggle">';
+                                echo '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
+                                echo '</button>';
+                            }
+                            echo '</div>';
+                            
+                            // Action buttons
+                            echo '<div class="mt-3">';
+                            echo '<div class="row g-2">';
+                            echo '<div class="col-8">';
+                            echo '<a href="' . $whatsappLink . '" target="_blank" class="btn btn-success w-100" onclick="event.stopPropagation()">';
+                            echo '<i class="fab fa-whatsapp me-2"></i>Pesan Sekarang';
+                            echo '</a>';
+                            echo '</div>';
+                            echo '<div class="col-4">';
+                            echo '<a href="detail-produk.html?id=' . $product['id'] . '" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">';
+                            echo '<i class="fas fa-eye"></i>';
+                            echo '</a>';
+                            echo '</div>';
+                            echo '</div>';
+                            echo '</div>';
+                            
+                            echo '</div>'; // card-body
+                            echo '</div>'; // card
+                            echo '</div>'; // col
+                        }
+                        
+                        // Show "View More" button if there are more products
+                        $totalQuery = "SELECT COUNT(*) as total FROM products WHERE is_active = 1";
+                        $totalStmt = $db->prepare($totalQuery);
+                        $totalStmt->execute();
+                        $totalResult = $totalStmt->fetch(PDO::FETCH_ASSOC);
+                        
+                        if ($totalResult['total'] > 6) {
+                            echo '<div class="col-12 text-center mt-4">';
+                            echo '<a href="produk.html" class="btn btn-primary btn-lg">';
+                            echo 'Lihat Semua Produk <i class="fas fa-arrow-right ms-2"></i>';
+                            echo '</a>';
+                            echo '</div>';
+                        }
+                        
+                    } else {
+                        echo '<div class="col-12 text-center">';
+                        echo '<i class="fas fa-box-open fa-3x text-muted mb-3"></i>';
+                        echo '<h4>Belum ada produk</h4>';
+                        echo '<p class="text-muted">Produk akan segera ditambahkan</p>';
+                        echo '</div>';
+                    }
+                    
+                } catch(Exception $e) {
+                    echo '<div class="col-12 text-center">';
+                    echo '<i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>';
+                    echo '<h4>Error loading products</h4>';
+                    echo '<p class="text-muted">Please try again later</p>';
+                    echo '</div>';
+                }
+                ?>
             </div>
         </div>
     </section>
@@ -157,7 +280,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Inline Dark Mode Toggle - Guaranteed to work
+        // Simple toggle description function
+        function toggleDescription(productId) {
+            const shortDiv = document.getElementById(productId + '-short');
+            const fullDiv = document.getElementById(productId + '-full');
+            const toggleBtn = document.getElementById(productId + '-toggle');
+            
+            if (fullDiv && toggleBtn) {
+                if (fullDiv.style.display === 'none') {
+                    // Show full description
+                    shortDiv.style.display = 'none';
+                    fullDiv.style.display = 'block';
+                    toggleBtn.innerHTML = '<small>Sembunyikan <i class="fas fa-chevron-up ms-1"></i></small>';
+                } else {
+                    // Show short description
+                    fullDiv.style.display = 'none';
+                    shortDiv.style.display = 'block';
+                    toggleBtn.innerHTML = '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
+                }
+            }
+        }
+        
+        // Dark Mode Toggle - Inline implementation
         document.addEventListener('DOMContentLoaded', function() {
             // Get saved theme
             const savedTheme = localStorage.getItem('theme') || 'light';
@@ -199,15 +343,10 @@
                     setTimeout(() => {
                         this.style.transform = 'scale(1)';
                     }, 100);
-                    
-                    console.log('Theme switched to:', newTheme);
                 });
             });
-            
-            console.log('Dark mode initialized. Found', toggleButtons.length, 'toggle buttons');
         });
     </script>
-    <script src="<?php echo asset('assets/js/script.min.js'); ?>"></script>
     <script>
         // Temporary debug script
         document.addEventListener('DOMContentLoaded', function() {
