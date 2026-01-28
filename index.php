@@ -131,6 +131,12 @@
             <div id="produk-unggulan" class="row">
                 <!-- Produk akan dimuat via JavaScript -->
             </div>
+            <div id="loading-products" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Memuat produk unggulan...</p>
+            </div>
             <div id="view-more-container" class="text-center mt-4" style="display: none;">
                 <a href="produk.html" class="btn btn-primary btn-lg">
                     Lihat Semua Produk <i class="fas fa-arrow-right ms-2"></i>
@@ -208,5 +214,72 @@
         });
     </script>
     <script src="<?php echo asset('assets/js/script.min.js'); ?>"></script>
+    <script>
+        // Debug script untuk homepage
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== HOMEPAGE DEBUG ===');
+            console.log('Current URL:', window.location.href);
+            console.log('Current pathname:', window.location.pathname);
+            
+            const currentPage = window.location.pathname.split('/').pop();
+            console.log('Detected page:', currentPage);
+            
+            // Test container
+            const container = document.getElementById('produk-unggulan');
+            const loading = document.getElementById('loading-products');
+            console.log('Container found:', !!container);
+            console.log('Loading element found:', !!loading);
+            
+            // Test API directly
+            setTimeout(() => {
+                console.log('Testing API call...');
+                fetch('api/get_products.php')
+                    .then(response => {
+                        console.log('API Response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('API Response data:', data);
+                        
+                        if (loading) loading.style.display = 'none';
+                        
+                        if (data.success && data.products.length > 0) {
+                            console.log('✅ Products found:', data.products.length);
+                            
+                            if (container) {
+                                container.innerHTML = '';
+                                data.products.slice(0, 6).forEach(product => {
+                                    const productCard = `
+                                        <div class="col-md-4 mb-4">
+                                            <div class="card h-100">
+                                                <img src="${product.foto}" class="card-img-top" alt="${product.nama_produk}">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${product.nama_produk}</h5>
+                                                    <p class="card-text">${product.deskripsi_singkat}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    container.innerHTML += productCard;
+                                });
+                                console.log('✅ Products displayed in container');
+                            }
+                        } else {
+                            console.log('❌ No products found');
+                            if (container) {
+                                container.innerHTML = '<div class="col-12 text-center"><p>Belum ada produk</p></div>';
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ API Error:', error);
+                        if (loading) loading.style.display = 'none';
+                        if (container) {
+                            container.innerHTML = '<div class="col-12 text-center"><p>Error loading products</p></div>';
+                        }
+                    });
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

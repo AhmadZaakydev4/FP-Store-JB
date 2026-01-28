@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Homepage Products</title>
+</head>
+<body>
+    <h1>Debug Homepage Products</h1>
+    <div id="debug-info"></div>
+    <div id="produk-unggulan" class="row"></div>
+
+    <script>
+        // Debug script untuk homepage
+        console.log('=== DEBUG HOMEPAGE PRODUCTS ===');
+        
+        // Test current page detection
+        const currentPage = window.location.pathname.split('/').pop();
+        console.log('Current page detected:', currentPage);
+        
+        // Test API call
+        async function testAPI() {
+            try {
+                console.log('Testing API call...');
+                const response = await fetch('api/get_products.php');
+                console.log('API Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('API Data:', data);
+                
+                if (data.success && data.products.length > 0) {
+                    console.log('✅ API working, products found:', data.products.length);
+                    
+                    // Test container
+                    const container = document.getElementById('produk-unggulan');
+                    console.log('Container found:', !!container);
+                    
+                    if (container) {
+                        container.innerHTML = '<p>✅ Products loaded: ' + data.products.length + '</p>';
+                        data.products.forEach((product, index) => {
+                            container.innerHTML += '<p>' + (index + 1) + '. ' + product.nama_produk + '</p>';
+                        });
+                    }
+                } else {
+                    console.log('❌ No products found');
+                    document.getElementById('debug-info').innerHTML = '❌ No products found';
+                }
+            } catch (error) {
+                console.error('❌ API Error:', error);
+                document.getElementById('debug-info').innerHTML = '❌ API Error: ' + error.message;
+            }
+        }
+        
+        // Run test
+        testAPI();
+    </script>
+</body>
+</html>
