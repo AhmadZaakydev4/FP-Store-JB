@@ -317,7 +317,26 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                             <button type="button" class="btn btn-outline-light btn-sm zoom-btn" onclick="zoomOut()" title="Zoom Out">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <span class="zoom-level text-white small">100%</span>
+                            
+                            <!-- Zoom Level Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light btn-sm dropdown-toggle zoom-level-btn" type="button" data-bs-toggle="dropdown" title="Zoom Presets">
+                                    <span class="zoom-level">100%</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark">
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(0.1)">10%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(0.25)">25%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(0.5)">50%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(0.75)">75%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(1)">100%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(1.5)">150%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(2)">200%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(3)">300%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(5)">500%</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="zoomTo(10)">1000%</a></li>
+                                </ul>
+                            </div>
+                            
                             <button type="button" class="btn btn-outline-light btn-sm zoom-btn" onclick="zoomIn()" title="Zoom In">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -430,7 +449,9 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
             // Mouse wheel zoom
             imageContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
-                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                // Adaptive wheel zoom - smaller steps for lower zoom levels
+                const step = currentZoom < 1 ? 0.05 : (currentZoom < 2 ? 0.1 : 0.2);
+                const delta = e.deltaY > 0 ? -step : step;
                 zoom(delta);
             });
             
@@ -489,16 +510,20 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
         }
         
         function zoom(delta) {
-            const newZoom = Math.max(0.5, Math.min(5, currentZoom + delta));
+            const newZoom = Math.max(0.1, Math.min(10, currentZoom + delta));
             zoomTo(newZoom);
         }
         
         function zoomIn() {
-            zoom(0.2);
+            // Adaptive zoom step - smaller steps for lower zoom levels
+            const step = currentZoom < 1 ? 0.1 : (currentZoom < 2 ? 0.2 : 0.5);
+            zoom(step);
         }
         
         function zoomOut() {
-            zoom(-0.2);
+            // Adaptive zoom step - smaller steps for lower zoom levels  
+            const step = currentZoom <= 1 ? 0.1 : (currentZoom <= 2 ? 0.2 : 0.5);
+            zoom(-step);
         }
         
         function zoomTo(level) {
@@ -529,7 +554,14 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
         function updateZoomLevel() {
             const zoomLevelElement = document.querySelector('.zoom-level');
             if (zoomLevelElement) {
-                zoomLevelElement.textContent = Math.round(currentZoom * 100) + '%';
+                // Show more precise zoom levels for small values
+                let displayZoom;
+                if (currentZoom < 1) {
+                    displayZoom = Math.round(currentZoom * 1000) / 10; // Show 1 decimal for small values
+                } else {
+                    displayZoom = Math.round(currentZoom * 100);
+                }
+                zoomLevelElement.textContent = displayZoom + '%';
             }
         }
         
