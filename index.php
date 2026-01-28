@@ -208,5 +208,88 @@
         });
     </script>
     <script src="<?php echo asset('assets/js/script.min.js'); ?>"></script>
+    <script>
+        // Temporary debug script
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== HOMEPAGE DEBUG ===');
+            
+            const currentPage = window.location.pathname.split('/').pop();
+            console.log('Current page:', currentPage);
+            
+            // Check if script.js loaded properly
+            if (typeof loadProducts === 'function') {
+                console.log('✅ loadProducts function exists');
+            } else {
+                console.log('❌ loadProducts function NOT found');
+            }
+            
+            // Test API directly
+            setTimeout(() => {
+                console.log('Testing API...');
+                fetch('api/get_products.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('API Response:', data);
+                        
+                        const container = document.getElementById('produk-unggulan');
+                        if (data.success && data.products.length > 0 && container) {
+                            console.log('✅ Manually loading products...');
+                            
+                            container.innerHTML = '';
+                            data.products.slice(0, 6).forEach(product => {
+                                const categoryBadge = product.nama_kategori ? 
+                                    `<span class="badge bg-primary position-absolute top-0 start-0 m-2">
+                                        <i class="${product.category_icon || 'fas fa-tag'} me-1"></i>
+                                        ${product.nama_kategori}
+                                    </span>` : '';
+                                
+                                const productCard = `
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card product-card h-100 shadow-sm" onclick="window.location.href='detail-produk.html?id=${product.id}'" style="cursor: pointer;">
+                                            <div class="position-relative">
+                                                <img src="${product.foto}" class="card-img-top product-image" alt="${product.nama_produk}" loading="lazy">
+                                                ${categoryBadge}
+                                                <div class="position-absolute bottom-0 end-0 m-2">
+                                                    <span class="badge bg-dark bg-opacity-75 text-white">
+                                                        <i class="fas fa-calendar me-1"></i>
+                                                        ${new Date(product.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="card-body d-flex flex-column">
+                                                <h5 class="card-title fw-bold">${product.nama_produk}</h5>
+                                                <div class="product-description flex-grow-1">
+                                                    <div class="description-short">
+                                                        ${product.deskripsi_singkat}
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <a href="https://wa.me/6289507410373?text=Halo admin, saya tertarik dengan produk ${encodeURIComponent(product.nama_produk)}. Apakah masih tersedia?" 
+                                                       class="btn btn-success w-100" target="_blank">
+                                                        <i class="fab fa-whatsapp me-2"></i>Pesan Sekarang
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                container.innerHTML += productCard;
+                            });
+                            
+                            // Show view more button
+                            const viewMoreContainer = document.getElementById('view-more-container');
+                            if (viewMoreContainer && data.products.length > 6) {
+                                viewMoreContainer.style.display = 'block';
+                            }
+                            
+                            console.log('✅ Products loaded manually');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ API Error:', error);
+                    });
+            }, 500);
+        });
+    </script>
 </body>
 </html>
