@@ -1617,31 +1617,6 @@ footer a:hover {
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
-/* Loading animation for modal image */
-#imageModal .modal-body::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    z-index: 1;
-}
-
-#imageModal #modalImage.loaded + .modal-body::before {
-    display: none;
-}
-
-@keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
 /* Responsive modal */
 @media (max-width: 768px) {
     #imageModal .modal-dialog {
