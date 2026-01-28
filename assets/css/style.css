@@ -1504,3 +1504,248 @@ footer a:hover {
         opacity: 1;
     }
 }
+
+/* Image Modal Styles */
+.clickable-image {
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: zoom-in !important;
+}
+
+.clickable-image:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+.image-overlay {
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clickable-image:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Modal Styles */
+#imageModal .modal-dialog {
+    max-width: 90vw;
+    margin: 1.75rem auto;
+}
+
+#imageModal .modal-content {
+    background: rgba(0, 0, 0, 0.9) !important;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#imageModal .modal-header {
+    background: transparent;
+    border: none;
+    padding: 1rem 1.5rem 0.5rem;
+}
+
+#imageModal .modal-title {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+#imageModal .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#imageModal .btn-close-white:hover {
+    opacity: 1;
+}
+
+#imageModal .modal-body {
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+#imageModal #modalImage {
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+#imageModal #modalImage:hover {
+    transform: scale(1.02);
+}
+
+#imageModal .modal-footer {
+    background: transparent;
+    border: none;
+    padding: 0.5rem 1.5rem 1.5rem;
+    justify-content: space-between;
+}
+
+#imageModal .btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+}
+
+#imageModal .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Loading animation for modal image */
+#imageModal .modal-body::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+#imageModal #modalImage.loaded + .modal-body::before {
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+    #imageModal .modal-dialog {
+        max-width: 95vw;
+        margin: 1rem auto;
+    }
+    
+    #imageModal .modal-header {
+        padding: 0.75rem 1rem 0.25rem;
+    }
+    
+    #imageModal .modal-title {
+        font-size: 1rem;
+    }
+    
+    #imageModal .modal-body {
+        padding: 0 1rem;
+        min-height: 200px;
+    }
+    
+    #imageModal #modalImage {
+        max-height: 70vh;
+    }
+    
+    #imageModal .modal-footer {
+        padding: 0.25rem 1rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    #imageModal .btn-outline-light {
+        width: 100%;
+        padding: 0.75rem;
+    }
+    
+    .image-overlay {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .image-overlay i {
+        font-size: 1.25rem;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 576px) {
+    #imageModal .modal-dialog {
+        max-width: 98vw;
+        margin: 0.5rem auto;
+    }
+    
+    #imageModal #modalImage {
+        max-height: 60vh;
+    }
+    
+    .clickable-image:hover {
+        transform: none;
+    }
+    
+    .image-overlay {
+        opacity: 0.7;
+    }
+}
+
+/* Keyboard navigation indicator */
+#imageModal.show .modal-content {
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Dark mode adjustments for modal */
+[data-theme="dark"] #imageModal .modal-content {
+    background: rgba(17, 24, 39, 0.95) !important;
+}
+
+[data-theme="dark"] #imageModal .btn-outline-light {
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+[data-theme="dark"] #imageModal .btn-outline-light:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.7);
+    color: #60a5fa;
+}
+
+/* Smooth transitions */
+* {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+    overflow: hidden;
+}

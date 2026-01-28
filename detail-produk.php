@@ -133,7 +133,14 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                 <div class="col-lg-6 mb-4">
                     <div class="product-image-container">
                         <div class="main-image-wrapper position-relative">
-                            <img src="<?php echo htmlspecialchars($product['foto']); ?>" alt="<?php echo htmlspecialchars($product['nama_produk']); ?>" class="img-fluid rounded shadow main-product-image">
+                            <img src="<?php echo htmlspecialchars($product['foto']); ?>" 
+                                 alt="<?php echo htmlspecialchars($product['nama_produk']); ?>" 
+                                 class="img-fluid rounded shadow main-product-image clickable-image" 
+                                 onclick="openImageModal('<?php echo htmlspecialchars($product['foto']); ?>', '<?php echo htmlspecialchars($product['nama_produk']); ?>')"
+                                 style="cursor: pointer;">
+                            <div class="image-overlay position-absolute top-50 start-50 translate-middle">
+                                <i class="fas fa-search-plus text-white fa-2x opacity-75"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -298,6 +305,31 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
         </div>
     </section>
 
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white" id="imageModalLabel">Preview Gambar</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img id="modalImage" src="" alt="" class="img-fluid rounded shadow-lg" style="max-height: 80vh; width: auto;">
+                </div>
+                <div class="modal-footer border-0 pt-2">
+                    <div class="d-flex justify-content-between w-100">
+                        <button type="button" class="btn btn-outline-light" onclick="downloadImage()">
+                            <i class="fas fa-download me-2"></i>Download
+                        </button>
+                        <button type="button" class="btn btn-outline-light" onclick="shareImage()">
+                            <i class="fas fa-share me-2"></i>Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-white py-4">
         <div class="container">
@@ -333,6 +365,63 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                 });
             }
         }
+        
+        // Image Modal Functions
+        function openImageModal(imageSrc, imageAlt) {
+            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            const modalImage = document.getElementById('modalImage');
+            const modalTitle = document.getElementById('imageModalLabel');
+            
+            modalImage.src = imageSrc;
+            modalImage.alt = imageAlt;
+            modalTitle.textContent = imageAlt;
+            
+            // Store current image for download/share
+            window.currentModalImage = {
+                src: imageSrc,
+                alt: imageAlt
+            };
+            
+            modal.show();
+        }
+        
+        function downloadImage() {
+            if (window.currentModalImage) {
+                const link = document.createElement('a');
+                link.href = window.currentModalImage.src;
+                link.download = window.currentModalImage.alt.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+        
+        function shareImage() {
+            if (window.currentModalImage && navigator.share) {
+                navigator.share({
+                    title: window.currentModalImage.alt + ' - FP Store',
+                    text: 'Lihat gambar produk ini di FP Store!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy image URL
+                if (window.currentModalImage) {
+                    navigator.clipboard.writeText(window.currentModalImage.src).then(() => {
+                        alert('Link gambar berhasil disalin!');
+                    });
+                }
+            }
+        }
+        
+        // Keyboard navigation for modal
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('imageModal');
+            if (modal.classList.contains('show')) {
+                if (e.key === 'Escape') {
+                    bootstrap.Modal.getInstance(modal).hide();
+                }
+            }
+        });
         
         // Dark Mode Toggle
         document.addEventListener('DOMContentLoaded', function() {
