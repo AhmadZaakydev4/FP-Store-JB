@@ -279,16 +279,18 @@
                                                 <h5 class="card-title fw-bold">${product.nama_produk}</h5>
                                                 <div class="product-description flex-grow-1">
                                                     <div class="description-short" id="product-${product.id}-short">
-                                                        ${product.deskripsi_singkat}
+                                                        <div>${product.deskripsi_singkat}</div>
                                                     </div>
                                                     <div class="description-full" id="product-${product.id}-full" style="display: none;">
-                                                        ${product.deskripsi}
+                                                        <div>${product.deskripsi}</div>
                                                     </div>
+                                                    ${product.deskripsi !== product.deskripsi_singkat ? `
                                                     <button class="btn btn-link p-0 mt-2 detail-toggle" 
                                                             onclick="event.stopPropagation(); toggleDescription('product-${product.id}')" 
                                                             id="product-${product.id}-toggle">
                                                         <small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>
                                                     </button>
+                                                    ` : ''}
                                                 </div>
                                                 <div class="mt-3">
                                                     <div class="row g-2">

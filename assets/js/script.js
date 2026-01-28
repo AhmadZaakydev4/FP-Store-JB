@@ -226,6 +226,19 @@ function createProductCardWithCategory(product) {
         </div>
     `;
     
+    // After setting innerHTML, we need to properly render HTML in description divs
+    setTimeout(() => {
+        const shortDiv = document.getElementById(`${productId}-short`);
+        const fullDiv = document.getElementById(`${productId}-full`);
+        
+        if (shortDiv) {
+            shortDiv.innerHTML = shortDescription;
+        }
+        if (fullDiv) {
+            fullDiv.innerHTML = fullDescription;
+        }
+    }, 0);
+    
     return col;
 }
 
