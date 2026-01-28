@@ -73,13 +73,13 @@
                         <a class="nav-link active" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="produk.html">Produk</a>
+                        <a class="nav-link" href="produk.php">Produk</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="tentang.html">Tentang Kami</a>
+                        <a class="nav-link" href="tentang.php">Tentang Kami</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="kontak.html">Kontak</a>
+                        <a class="nav-link" href="kontak.php">Kontak</a>
                     </li>
                     <li class="nav-item">
                         <button class="theme-toggle ms-2" title="Toggle Dark Mode">
@@ -236,7 +236,7 @@
                         
                         if ($totalResult['total'] > 6) {
                             echo '<div class="col-12 text-center mt-4">';
-                            echo '<a href="produk.html" class="btn btn-primary btn-lg">';
+                            echo '<a href="produk.php" class="btn btn-primary btn-lg">';
                             echo 'Lihat Semua Produk <i class="fas fa-arrow-right ms-2"></i>';
                             echo '</a>';
                             echo '</div>';
