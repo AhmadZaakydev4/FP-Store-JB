@@ -347,6 +347,9 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                 <div class="modal-body text-center p-0" id="imageContainer">
                     <div class="image-wrapper">
                         <img id="modalImage" src="" alt="" class="img-fluid rounded shadow-lg zoomable-image" style="max-height: 80vh; width: auto; transition: transform 0.3s ease;">
+                        <div class="touch-hint" id="touchHint">
+                            <i class="fas fa-hand-paper me-2"></i>Cubit dengan 2 jari untuk zoom
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-2">
@@ -433,10 +436,35 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
             
             modal.show();
             
+            // Show touch hint on mobile devices
+            if (isMobileDevice()) {
+                showTouchHint();
+            }
+            
             // Add event listeners after modal is shown
             setTimeout(() => {
                 setupImageInteractions();
             }, 300);
+        }
+        
+        // Helper function to detect mobile devices
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   ('ontouchstart' in window) || 
+                   (navigator.maxTouchPoints > 0);
+        }
+        
+        // Show touch hint for mobile users
+        function showTouchHint() {
+            const touchHint = document.getElementById('touchHint');
+            if (touchHint) {
+                touchHint.classList.add('show');
+                
+                // Hide hint after 3 seconds
+                setTimeout(() => {
+                    touchHint.classList.remove('show');
+                }, 3000);
+            }
         }
         
         function setupImageInteractions() {
@@ -450,6 +478,38 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                 const step = currentZoom < 1 ? 0.05 : (currentZoom < 2 ? 0.1 : 0.2);
                 const delta = e.deltaY > 0 ? -step : step;
                 zoom(delta);
+            });
+            
+            // Pinch to zoom for mobile
+            let initialDistance = 0;
+            let initialZoom = 1;
+            
+            imageContainer.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    // Pinch gesture started
+                    e.preventDefault();
+                    initialDistance = getDistance(e.touches[0], e.touches[1]);
+                    initialZoom = currentZoom;
+                }
+            });
+            
+            imageContainer.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    // Pinch gesture in progress
+                    e.preventDefault();
+                    const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                    const scale = currentDistance / initialDistance;
+                    const newZoom = Math.max(0.1, Math.min(10, initialZoom * scale));
+                    zoomTo(newZoom);
+                }
+            });
+            
+            imageContainer.addEventListener('touchend', function(e) {
+                if (e.touches.length < 2) {
+                    // Pinch gesture ended
+                    initialDistance = 0;
+                    initialZoom = currentZoom;
+                }
             });
             
             // Touch/Mouse drag to pan
@@ -470,12 +530,39 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                     resetZoom();
                 }
             });
+            
+            // Double tap to zoom for mobile
+            let lastTap = 0;
+            modalImage.addEventListener('touchend', function(e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 500 && tapLength > 0) {
+                    // Double tap detected
+                    e.preventDefault();
+                    if (currentZoom === 1) {
+                        zoomTo(2);
+                    } else {
+                        resetZoom();
+                    }
+                }
+                lastTap = currentTime;
+            });
+        }
+        
+        // Helper function to calculate distance between two touch points
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
         }
         
         function startDrag(e) {
+            // Don't start drag if it's a pinch gesture (2+ fingers)
+            if (e.type === 'touchstart' && e.touches.length > 1) return;
             if (currentZoom <= 1) return;
             
             isDragging = true;
+            const modalImage = document.getElementById('modalImage');
             modalImage.style.cursor = 'grabbing';
             
             const clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
@@ -488,6 +575,8 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
         }
         
         function drag(e) {
+            // Don't drag during pinch gesture
+            if (e.type === 'touchmove' && e.touches.length > 1) return;
             if (!isDragging || currentZoom <= 1) return;
             
             const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;

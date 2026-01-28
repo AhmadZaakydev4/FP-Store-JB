@@ -2018,3 +2018,110 @@ body.modal-open {
     transform: none !important;
     background: rgba(255, 255, 255, 0.1) !important;
 }
+/* Touch Gesture Support */
+#imageModal .modal-body {
+    touch-action: none; /* Prevent default touch behaviors */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#imageModal .zoomable-image {
+    touch-action: none; /* Allow custom touch handling */
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+
+/* Pinch gesture visual feedback */
+.pinch-active {
+    transition: none !important; /* Disable transitions during pinch */
+}
+
+/* Touch hints for mobile users */
+.touch-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.touch-hint.show {
+    opacity: 1;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    #imageModal .modal-body {
+        padding: 0;
+        overflow: hidden;
+    }
+    
+    #imageModal .image-wrapper {
+        min-height: 250px;
+        max-height: 75vh;
+    }
+    
+    /* Larger touch targets for mobile */
+    .zoom-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .zoom-level-btn {
+        min-width: 60px;
+        min-height: 44px;
+    }
+}
+
+/* Prevent text selection during gestures */
+.gesture-active {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Smooth pinch zoom */
+.pinch-zoom {
+    transition: transform 0.1s ease-out;
+}
+
+/* Touch feedback */
+.touch-feedback {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    position: absolute;
+    pointer-events: none;
+    transform: scale(0);
+    animation: touchRipple 0.6s ease-out;
+}
+
+@keyframes touchRipple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Prevent zoom on double tap in mobile browsers */
+#imageModal * {
+    touch-action: manipulation;
+}
+
+#imageModal .image-wrapper,
+#imageModal .zoomable-image {
+    touch-action: none; /* Override for our custom handling */
+}
