@@ -195,11 +195,11 @@ function createProductCardWithCategory(product) {
                 <h5 class="card-title fw-bold">${product.nama_produk}</h5>
                 <div class="product-description flex-grow-1">
                     <div id="${productId}-short" class="description-short">
-                        ${shortDescription}
+                        <!-- Short description will be set via innerHTML -->
                     </div>
                     ${needsDetailButton ? `
-                        <div id="${productId}-full" class="description-full">
-                            ${fullDescription}
+                        <div id="${productId}-full" class="description-full" style="display: none;">
+                            <!-- Full description will be set via innerHTML -->
                         </div>
                         <button class="btn btn-link p-0 mt-2 detail-toggle" 
                                 onclick="event.stopPropagation(); toggleDescription('${productId}')" 
@@ -226,18 +226,16 @@ function createProductCardWithCategory(product) {
         </div>
     `;
     
-    // After setting innerHTML, we need to properly render HTML in description divs
-    setTimeout(() => {
-        const shortDiv = document.getElementById(`${productId}-short`);
-        const fullDiv = document.getElementById(`${productId}-full`);
-        
-        if (shortDiv) {
-            shortDiv.innerHTML = shortDescription;
-        }
-        if (fullDiv) {
-            fullDiv.innerHTML = fullDescription;
-        }
-    }, 0);
+    // Immediately set innerHTML for description divs after the card is created
+    const shortDiv = col.querySelector(`#${productId}-short`);
+    const fullDiv = col.querySelector(`#${productId}-full`);
+    
+    if (shortDiv) {
+        shortDiv.innerHTML = shortDescription;
+    }
+    if (fullDiv) {
+        fullDiv.innerHTML = fullDescription;
+    }
     
     return col;
 }
