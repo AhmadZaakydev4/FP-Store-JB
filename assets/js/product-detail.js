@@ -191,7 +191,7 @@ function createRelatedProductCard(product) {
                             </a>
                         </div>
                         <div class="col-4">
-                            <a href="detail-produk.html?id=${product.id}" class="btn btn-outline-primary btn-sm w-100">
+                            <a href="detail-produk.php?id=${product.id}" class="btn btn-outline-primary btn-sm w-100">
                                 <i class="fas fa-eye"></i>
                             </a>
                         </div>

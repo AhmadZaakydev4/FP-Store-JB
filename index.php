@@ -163,7 +163,7 @@
                             $needsDetailButton = strlen($product['deskripsi']) > strlen($product['deskripsi_singkat']) + 20;
                             
                             echo '<div class="col-lg-4 col-md-6 mb-4">';
-                            echo '<div class="card product-card h-100 shadow-sm" onclick="window.location.href=\'detail-produk.html?id=' . $product['id'] . '\'" style="cursor: pointer;">';
+                            echo '<div class="card product-card h-100 shadow-sm" onclick="window.location.href=\'detail-produk.php?id=' . $product['id'] . '\'" style="cursor: pointer;">';
                             
                             // Image and badges
                             echo '<div class="position-relative">';
@@ -191,19 +191,17 @@
                             echo '<div class="card-body d-flex flex-column">';
                             echo '<h5 class="card-title fw-bold">' . htmlspecialchars($product['nama_produk']) . '</h5>';
                             
-                            // Description
+                            // Description - hanya tampilkan deskripsi singkat
                             echo '<div class="product-description flex-grow-1">';
-                            echo '<div id="product-' . $product['id'] . '-short" class="description-short">';
+                            echo '<div class="description-short">';
                             echo $product['deskripsi_singkat']; // Allow HTML
                             echo '</div>';
                             
+                            // Tombol "Lihat Detail" jika ada deskripsi lengkap
                             if ($needsDetailButton) {
-                                echo '<div id="product-' . $product['id'] . '-full" class="description-full" style="display: none;">';
-                                echo $product['deskripsi']; // Allow HTML
-                                echo '</div>';
-                                echo '<button class="btn btn-link p-0 mt-2 detail-toggle" onclick="event.stopPropagation(); toggleDescription(\'product-' . $product['id'] . '\')" id="product-' . $product['id'] . '-toggle">';
-                                echo '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
-                                echo '</button>';
+                                echo '<a href="detail-produk.php?id=' . $product['id'] . '" class="btn btn-link p-0 mt-2" onclick="event.stopPropagation()">';
+                                echo '<small>Lihat Detail <i class="fas fa-arrow-right ms-1"></i></small>';
+                                echo '</a>';
                             }
                             echo '</div>';
                             
@@ -216,7 +214,7 @@
                             echo '</a>';
                             echo '</div>';
                             echo '<div class="col-4">';
-                            echo '<a href="detail-produk.html?id=' . $product['id'] . '" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">';
+                            echo '<a href="detail-produk.php?id=' . $product['id'] . '" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">';
                             echo '<i class="fas fa-eye"></i>';
                             echo '</a>';
                             echo '</div>';
@@ -280,27 +278,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Simple toggle description function
-        function toggleDescription(productId) {
-            const shortDiv = document.getElementById(productId + '-short');
-            const fullDiv = document.getElementById(productId + '-full');
-            const toggleBtn = document.getElementById(productId + '-toggle');
-            
-            if (fullDiv && toggleBtn) {
-                if (fullDiv.style.display === 'none') {
-                    // Show full description
-                    shortDiv.style.display = 'none';
-                    fullDiv.style.display = 'block';
-                    toggleBtn.innerHTML = '<small>Sembunyikan <i class="fas fa-chevron-up ms-1"></i></small>';
-                } else {
-                    // Show short description
-                    fullDiv.style.display = 'none';
-                    shortDiv.style.display = 'block';
-                    toggleBtn.innerHTML = '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
-                }
-            }
-        }
-        
         // Dark Mode Toggle - Inline implementation
         document.addEventListener('DOMContentLoaded', function() {
             // Get saved theme
@@ -403,7 +380,7 @@
                                 
                                 const productCard = `
                                     <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card product-card h-100 shadow-sm" onclick="window.location.href='detail-produk.html?id=${product.id}'" style="cursor: pointer;">
+                                        <div class="card product-card h-100 shadow-sm" onclick="window.location.href='detail-produk.php?id=${product.id}'" style="cursor: pointer;">
                                             <div class="position-relative">
                                                 <img src="${product.foto}" class="card-img-top product-image" alt="${product.nama_produk}" loading="lazy">
                                                 ${categoryBadge}
@@ -440,7 +417,7 @@
                                                             </a>
                                                         </div>
                                                         <div class="col-4">
-                                                            <a href="detail-produk.html?id=${product.id}" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">
+                                                            <a href="detail-produk.php?id=${product.id}" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">
                                                                 <i class="fas fa-eye"></i>
                                                             </a>
                                                         </div>

@@ -204,7 +204,7 @@ try {
                                     </h6>
                                 </div>
                                 <div class="card-body">
-                                    <a href="../index.html" target="_blank" class="btn btn-outline-primary w-100 mb-2">
+                                    <a href="../index.php" target="_blank" class="btn btn-outline-primary w-100 mb-2">
                                         <i class="fas fa-external-link-alt me-2"></i>Preview Website
                                     </a>
                                     <a href="products.php" class="btn btn-outline-success w-100">

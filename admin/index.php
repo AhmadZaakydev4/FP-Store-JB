@@ -130,7 +130,7 @@ try {
                                 </a>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <a href="../index.html" target="_blank" class="btn admin-btn admin-btn-success w-100 py-3">
+                                <a href="../index.php" target="_blank" class="btn admin-btn admin-btn-success w-100 py-3">
                                     <i class="fas fa-external-link-alt me-2"></i>
                                     Preview Website
                                 </a>

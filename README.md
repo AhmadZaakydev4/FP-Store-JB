@@ -90,10 +90,10 @@ const WHATSAPP_CONFIG = {
 ```
 FP-Store-JB/
 ├── 📄 index.php              # Homepage dengan cache busting
-├── 📄 produk.html            # Katalog produk dengan filter
-├── 📄 detail-produk.html     # Detail produk individual
-├── 📄 tentang.html           # Halaman about us
-├── 📄 kontak.html            # Halaman kontak
+├── 📄 produk.php             # Katalog produk dengan filter
+├── 📄 detail-produk.php      # Detail produk individual
+├── 📄 tentang.php            # Halaman about us
+├── 📄 kontak.php             # Halaman kontak
 ├── 📁 assets/
 │   ├── 🎨 css/
 │   │   ├── style.css         # Main stylesheet
@@ -150,9 +150,9 @@ Website sudah dilengkapi dengan dark mode toggle. Tema tersimpan di localStorage
 
 ### Business Information
 
-1. **Store Name**: Edit di semua file HTML
+1. **Store Name**: Edit di semua file PHP
 2. **WhatsApp Number**: Via admin panel atau edit `assets/js/script.js`
-3. **Contact Info**: Edit di `kontak.html`
+3. **Contact Info**: Edit di `kontak.php`
 
 ## 📱 WhatsApp Features
 

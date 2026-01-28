@@ -181,7 +181,7 @@ function createProductCardWithCategory(product) {
     });
     
     col.innerHTML = `
-        <div class="card product-card h-100 shadow-sm" onclick="window.location.href='detail-produk.html?id=${product.id}'" style="cursor: pointer;">
+        <div class="card product-card h-100 shadow-sm" onclick="window.location.href='detail-produk.php?id=${product.id}'" style="cursor: pointer;">
             <div class="position-relative">
                 <img src="${product.foto}" class="card-img-top product-image" alt="${product.nama_produk}" loading="lazy">
                 ${categoryBadge}
@@ -194,18 +194,13 @@ function createProductCardWithCategory(product) {
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title fw-bold">${product.nama_produk}</h5>
                 <div class="product-description flex-grow-1">
-                    <div id="${productId}-short" class="description-short">
+                    <div class="description-short">
                         <!-- Short description will be set via innerHTML -->
                     </div>
                     ${needsDetailButton ? `
-                        <div id="${productId}-full" class="description-full" style="display: none;">
-                            <!-- Full description will be set via innerHTML -->
-                        </div>
-                        <button class="btn btn-link p-0 mt-2 detail-toggle" 
-                                onclick="event.stopPropagation(); toggleDescription('${productId}')" 
-                                id="${productId}-toggle">
-                            <small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>
-                        </button>
+                        <a href="detail-produk.php?id=${product.id}" class="btn btn-link p-0 mt-2" onclick="event.stopPropagation()">
+                            <small>Lihat Detail <i class="fas fa-arrow-right ms-1"></i></small>
+                        </a>
                     ` : ''}
                 </div>
                 <div class="mt-3">
@@ -216,7 +211,7 @@ function createProductCardWithCategory(product) {
                             </a>
                         </div>
                         <div class="col-4">
-                            <a href="detail-produk.html?id=${product.id}" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">
+                            <a href="detail-produk.php?id=${product.id}" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">
                                 <i class="fas fa-eye"></i>
                             </a>
                         </div>
@@ -226,15 +221,11 @@ function createProductCardWithCategory(product) {
         </div>
     `;
     
-    // Immediately set innerHTML for description divs after the card is created
-    const shortDiv = col.querySelector(`#${productId}-short`);
-    const fullDiv = col.querySelector(`#${productId}-full`);
+    // Immediately set innerHTML for description div after the card is created
+    const shortDiv = col.querySelector('.description-short');
     
     if (shortDiv) {
         shortDiv.innerHTML = shortDescription;
-    }
-    if (fullDiv) {
-        fullDiv.innerHTML = fullDescription;
     }
     
     return col;
@@ -273,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop();
         console.log('Current page:', currentPage);
         
-        if (currentPage === 'index.php' || currentPage === 'index.html' || currentPage === '') {
+        if (currentPage === 'index.php' || currentPage === '') {
             console.log('Loading products for homepage...');
             // Halaman home - cek total produk dulu, lalu tampilkan 6 pertama
             loadProducts().then(allProducts => {
@@ -286,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).catch(error => {
                 console.error('Error loading products for homepage:', error);
             });
-        } else if (currentPage === 'produk.html') {
+        } else if (currentPage === 'produk.php') {
             console.log('Loading products for product page...');
             // Initialize category filtering for products page
             initializeCategoryFiltering();
@@ -295,14 +286,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error loading settings:', error);
         // Fallback: load products anyway
         const currentPage = window.location.pathname.split('/').pop();
-        if (currentPage === 'index.php' || currentPage === 'index.html' || currentPage === '') {
+        if (currentPage === 'index.php' || currentPage === '') {
             loadProducts().then(allProducts => {
                 const totalProducts = allProducts.length;
                 const displayedProducts = allProducts.slice(0, 6);
                 displayProducts(displayedProducts, 'produk-unggulan');
                 handleViewMoreButton(totalProducts);
             });
-        } else if (currentPage === 'produk.html') {
+        } else if (currentPage === 'produk.php') {
             // Initialize category filtering for products page
             initializeCategoryFiltering();
         }
@@ -490,53 +481,7 @@ window.createWhatsAppLink = createWhatsAppLink;
 window.showAddress = showAddress;
 window.openEmail = openEmail;
 window.loadSettings = loadSettings;
-window.toggleDescription = toggleDescription;
 window.forceCacheRefresh = forceCacheRefresh;
-
-// Fungsi untuk toggle deskripsi lengkap/singkat (pastikan tersedia secara global)
-// Fungsi untuk toggle deskripsi lengkap/singkat (pastikan tersedia secara global)
-function toggleDescription(productId) {
-    console.log('toggleDescription called for:', productId);
-    
-    const shortDiv = document.getElementById(`${productId}-short`);
-    const fullDiv = document.getElementById(`${productId}-full`);
-    const toggleBtn = document.getElementById(`${productId}-toggle`);
-    
-    console.log('Elements found:', {
-        shortDiv: !!shortDiv,
-        fullDiv: !!fullDiv,
-        toggleBtn: !!toggleBtn
-    });
-    
-    if (shortDiv && fullDiv && toggleBtn) {
-        const isFullHidden = !fullDiv.classList.contains('show');
-        console.log('Current state - full description hidden:', isFullHidden);
-        
-        if (isFullHidden) {
-            // Show full description, hide short
-            shortDiv.style.display = 'none';
-            fullDiv.classList.add('show');
-            toggleBtn.innerHTML = '<small>Lihat Ringkasan <i class="fas fa-chevron-up ms-1"></i></small>';
-            console.log('Switched to full description');
-        } else {
-            // Show short description, hide full
-            fullDiv.classList.remove('show');
-            shortDiv.style.display = 'block';
-            toggleBtn.innerHTML = '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
-            console.log('Switched to short description');
-        }
-    } else {
-        console.error('Toggle elements not found for product:', productId);
-        console.error('Missing elements:', {
-            shortDiv: !shortDiv ? 'missing' : 'found',
-            fullDiv: !fullDiv ? 'missing' : 'found', 
-            toggleBtn: !toggleBtn ? 'missing' : 'found'
-        });
-    }
-}
-
-// Make sure it's available globally
-window.toggleDescription = toggleDescription;
 
 // Admin Access - Hidden shortcut (Ctrl+Shift+A)
 document.addEventListener('keydown', function(e) {
@@ -789,9 +734,9 @@ function resetAllFilters() {
     filterProductsByCategory('all');
 }
 
-// Initialize category filtering and sorting on produk.html
+// Initialize category filtering and sorting on produk.php
 async function initializeCategoryFiltering() {
-    if (window.location.pathname.includes('produk.html')) {
+    if (window.location.pathname.includes('produk.php')) {
         console.log('Initializing category filtering and sorting...');
         
         // Load categories and products

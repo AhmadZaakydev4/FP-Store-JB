@@ -39,7 +39,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
             
             <hr class="sidebar-divider">
             
-            <a class="sidebar-nav-link" href="../index.html" target="_blank">
+            <a class="sidebar-nav-link" href="../index.php" target="_blank">
                 <i class="fas fa-external-link-alt"></i>
                 <span>Lihat Website</span>
             </a>

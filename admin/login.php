@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </form>
                         
                         <div class="text-center mt-3">
-                            <a href="../index.html" class="text-decoration-none">
+                            <a href="../index.php" class="text-decoration-none">
                                 <i class="fas fa-arrow-left me-1"></i>
                                 Kembali ke Website
                             </a>

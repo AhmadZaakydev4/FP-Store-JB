@@ -3,6 +3,12 @@
 # Aktifkan mod_rewrite
 RewriteEngine On
 
+# Redirect HTML ke PHP (untuk backward compatibility)
+RewriteRule ^produk\.html$ produk.php [R=301,L]
+RewriteRule ^detail-produk\.html$ detail-produk.php [R=301,L]
+RewriteRule ^tentang\.html$ tentang.php [R=301,L]
+RewriteRule ^kontak\.html$ kontak.php [R=301,L]
+
 # Redirect ke HTTPS (jika tersedia)
 # RewriteCond %{HTTPS} off
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
@@ -96,8 +102,8 @@ RewriteEngine On
 </FilesMatch>
 
 # Custom Error Pages (opsional)
-# ErrorDocument 404 /404.html
-# ErrorDocument 500 /500.html
+# ErrorDocument 404 /404.php
+# ErrorDocument 500 /500.php
 
 # Limit file upload size (jika diperlukan)
 php_value upload_max_filesize 10M

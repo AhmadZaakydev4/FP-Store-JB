@@ -241,19 +241,16 @@
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title fw-bold"><?php echo htmlspecialchars($product['nama_produk']); ?></h5>
                                     
-                                    <!-- Description -->
+                                    <!-- Description - hanya tampilkan deskripsi singkat -->
                                     <div class="product-description flex-grow-1">
-                                        <div id="product-<?php echo $product['id']; ?>-short" class="description-short">
+                                        <div class="description-short">
                                             <?php echo $product['deskripsi_singkat']; ?>
                                         </div>
                                         
                                         <?php if ($needsDetailButton): ?>
-                                        <div id="product-<?php echo $product['id']; ?>-full" class="description-full" style="display: none;">
-                                            <?php echo $product['deskripsi']; ?>
-                                        </div>
-                                        <button class="btn btn-link p-0 mt-2 detail-toggle" onclick="event.stopPropagation(); toggleDescription('product-<?php echo $product['id']; ?>')" id="product-<?php echo $product['id']; ?>-toggle">
-                                            <small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>
-                                        </button>
+                                        <a href="detail-produk.php?id=<?php echo $product['id']; ?>" class="btn btn-link p-0 mt-2" onclick="event.stopPropagation()">
+                                            <small>Lihat Detail <i class="fas fa-arrow-right ms-1"></i></small>
+                                        </a>
                                         <?php endif; ?>
                                     </div>
                                     
@@ -310,25 +307,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Toggle description function
-        function toggleDescription(productId) {
-            const shortDiv = document.getElementById(productId + '-short');
-            const fullDiv = document.getElementById(productId + '-full');
-            const toggleBtn = document.getElementById(productId + '-toggle');
-            
-            if (fullDiv && toggleBtn) {
-                if (fullDiv.style.display === 'none') {
-                    shortDiv.style.display = 'none';
-                    fullDiv.style.display = 'block';
-                    toggleBtn.innerHTML = '<small>Sembunyikan <i class="fas fa-chevron-up ms-1"></i></small>';
-                } else {
-                    fullDiv.style.display = 'none';
-                    shortDiv.style.display = 'block';
-                    toggleBtn.innerHTML = '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
-                }
-            }
-        }
-        
         // Dark Mode Toggle
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'light';

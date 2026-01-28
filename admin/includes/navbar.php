@@ -45,7 +45,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     <li><a class="dropdown-item" href="settings.php">
                         <i class="fas fa-cog me-2"></i>Pengaturan
                     </a></li>
-                    <li><a class="dropdown-item" href="../index.html" target="_blank">
+                    <li><a class="dropdown-item" href="../index.php" target="_blank">
                         <i class="fas fa-external-link-alt me-2"></i>Lihat Website
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
