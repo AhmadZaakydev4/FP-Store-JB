@@ -138,9 +138,6 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
                                  class="img-fluid rounded shadow main-product-image clickable-image" 
                                  onclick="openImageModal('<?php echo htmlspecialchars($product['foto']); ?>', '<?php echo htmlspecialchars($product['nama_produk']); ?>')"
                                  style="cursor: pointer;">
-                            <div class="image-overlay position-absolute top-50 start-50 translate-middle">
-                                <i class="fas fa-search-plus text-white fa-2x opacity-75"></i>
-                            </div>
                         </div>
                     </div>
                 </div>

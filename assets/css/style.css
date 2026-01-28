@@ -1517,23 +1517,6 @@ footer a:hover {
     filter: brightness(1.1);
 }
 
-.image-overlay {
-    opacity: 0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.clickable-image:hover .image-overlay {
-    opacity: 1;
-}
-
 /* Modal Styles */
 #imageModal .modal-dialog {
     max-width: 90vw;
@@ -1651,15 +1634,6 @@ footer a:hover {
         width: 100%;
         padding: 0.75rem;
     }
-    
-    .image-overlay {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .image-overlay i {
-        font-size: 1.25rem;
-    }
 }
 
 /* Extra small screens */
@@ -1675,10 +1649,6 @@ footer a:hover {
     
     .clickable-image:hover {
         transform: none;
-    }
-    
-    .image-overlay {
-        opacity: 0.7;
     }
 }
 
