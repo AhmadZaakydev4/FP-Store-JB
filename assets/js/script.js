@@ -445,12 +445,42 @@ Terima kasih.`;
     window.location.href = mailtoUrl;
 }
 
+// Cache Busting Functions
+function forceCacheRefresh() {
+    // Force refresh dengan bypass cache
+    if (confirm('Refresh halaman untuk melihat update terbaru?')) {
+        // Hard refresh - bypass cache
+        window.location.reload(true);
+    }
+}
+
+function checkForUpdates() {
+    // Cek apakah ada update dengan menambahkan timestamp ke request
+    const timestamp = new Date().getTime();
+    const testUrl = `api/get_products.php?cache_bust=${timestamp}`;
+    
+    fetch(testUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Update check completed at:', new Date().toLocaleTimeString());
+        })
+        .catch(error => {
+            console.log('Update check failed:', error);
+        });
+}
+
+// Auto check for updates setiap 5 menit (untuk development)
+if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
+    setInterval(checkForUpdates, 300000); // 5 menit
+}
+
 // Export fungsi untuk digunakan di halaman lain
 window.createWhatsAppLink = createWhatsAppLink;
 window.showAddress = showAddress;
 window.openEmail = openEmail;
 window.loadSettings = loadSettings;
 window.toggleDescription = toggleDescription;
+window.forceCacheRefresh = forceCacheRefresh;
 
 // Fungsi untuk toggle deskripsi lengkap/singkat (pastikan tersedia secara global)
 // Fungsi untuk toggle deskripsi lengkap/singkat (pastikan tersedia secara global)
