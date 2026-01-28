@@ -216,6 +216,25 @@
             const currentPage = window.location.pathname.split('/').pop();
             console.log('Current page:', currentPage);
             
+            // Add toggleDescription function
+            window.toggleDescription = function(productId) {
+                const shortDiv = document.getElementById(productId + '-short');
+                const fullDiv = document.getElementById(productId + '-full');
+                const toggleBtn = document.getElementById(productId + '-toggle');
+                
+                if (fullDiv.style.display === 'none') {
+                    // Show full description
+                    shortDiv.style.display = 'none';
+                    fullDiv.style.display = 'block';
+                    toggleBtn.innerHTML = '<small>Sembunyikan <i class="fas fa-chevron-up ms-1"></i></small>';
+                } else {
+                    // Show short description
+                    fullDiv.style.display = 'none';
+                    shortDiv.style.display = 'block';
+                    toggleBtn.innerHTML = '<small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>';
+                }
+            };
+            
             // Check if script.js loaded properly
             if (typeof loadProducts === 'function') {
                 console.log('✅ loadProducts function exists');
@@ -259,15 +278,32 @@
                                             <div class="card-body d-flex flex-column">
                                                 <h5 class="card-title fw-bold">${product.nama_produk}</h5>
                                                 <div class="product-description flex-grow-1">
-                                                    <div class="description-short">
+                                                    <div class="description-short" id="product-${product.id}-short">
                                                         ${product.deskripsi_singkat}
                                                     </div>
+                                                    <div class="description-full" id="product-${product.id}-full" style="display: none;">
+                                                        ${product.deskripsi}
+                                                    </div>
+                                                    <button class="btn btn-link p-0 mt-2 detail-toggle" 
+                                                            onclick="event.stopPropagation(); toggleDescription('product-${product.id}')" 
+                                                            id="product-${product.id}-toggle">
+                                                        <small>Lihat Detail <i class="fas fa-chevron-down ms-1"></i></small>
+                                                    </button>
                                                 </div>
                                                 <div class="mt-3">
-                                                    <a href="https://wa.me/6289507410373?text=Halo admin, saya tertarik dengan produk ${encodeURIComponent(product.nama_produk)}. Apakah masih tersedia?" 
-                                                       class="btn btn-success w-100" target="_blank">
-                                                        <i class="fab fa-whatsapp me-2"></i>Pesan Sekarang
-                                                    </a>
+                                                    <div class="row g-2">
+                                                        <div class="col-8">
+                                                            <a href="https://wa.me/6289507410373?text=Halo admin, saya tertarik dengan produk ${encodeURIComponent(product.nama_produk)}. Apakah masih tersedia?" 
+                                                               class="btn btn-success w-100" target="_blank">
+                                                                <i class="fab fa-whatsapp me-2"></i>Pesan Sekarang
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <a href="detail-produk.html?id=${product.id}" class="btn btn-outline-primary w-100" title="Lihat Detail" onclick="event.stopPropagation()">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
