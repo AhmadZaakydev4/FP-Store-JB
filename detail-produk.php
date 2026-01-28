@@ -311,19 +311,41 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
             <div class="modal-content bg-transparent border-0">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title text-white" id="imageModalLabel">Preview Gambar</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Zoom Controls -->
+                        <div class="zoom-controls d-flex align-items-center gap-1">
+                            <button type="button" class="btn btn-outline-light btn-sm zoom-btn" onclick="zoomOut()" title="Zoom Out">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="zoom-level text-white small">100%</span>
+                            <button type="button" class="btn btn-outline-light btn-sm zoom-btn" onclick="zoomIn()" title="Zoom In">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-light btn-sm zoom-btn" onclick="resetZoom()" title="Reset Zoom">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </button>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
-                <div class="modal-body text-center p-0">
-                    <img id="modalImage" src="" alt="" class="img-fluid rounded shadow-lg" style="max-height: 80vh; width: auto;">
+                <div class="modal-body text-center p-0" id="imageContainer">
+                    <div class="image-wrapper">
+                        <img id="modalImage" src="" alt="" class="img-fluid rounded shadow-lg zoomable-image" style="max-height: 80vh; width: auto; transition: transform 0.3s ease;">
+                    </div>
                 </div>
                 <div class="modal-footer border-0 pt-2">
                     <div class="d-flex justify-content-between w-100">
                         <button type="button" class="btn btn-outline-light" onclick="downloadImage()">
                             <i class="fas fa-download me-2"></i>Download
                         </button>
-                        <button type="button" class="btn btn-outline-light" onclick="shareImage()">
-                            <i class="fas fa-share me-2"></i>Share
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-light" onclick="toggleFullscreen()" title="Fullscreen">
+                                <i class="fas fa-expand me-2"></i>Fullscreen
+                            </button>
+                            <button type="button" class="btn btn-outline-light" onclick="shareImage()">
+                                <i class="fas fa-share me-2"></i>Share
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -367,6 +389,10 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
         }
         
         // Image Modal Functions
+        let currentZoom = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+        
         function openImageModal(imageSrc, imageAlt) {
             const modal = new bootstrap.Modal(document.getElementById('imageModal'));
             const modalImage = document.getElementById('modalImage');
@@ -376,6 +402,13 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
             modalImage.alt = imageAlt;
             modalTitle.textContent = imageAlt;
             
+            // Reset zoom and position
+            currentZoom = 1;
+            translateX = 0;
+            translateY = 0;
+            updateImageTransform();
+            updateZoomLevel();
+            
             // Store current image for download/share
             window.currentModalImage = {
                 src: imageSrc,
@@ -383,6 +416,133 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
             };
             
             modal.show();
+            
+            // Add event listeners after modal is shown
+            setTimeout(() => {
+                setupImageInteractions();
+            }, 300);
+        }
+        
+        function setupImageInteractions() {
+            const modalImage = document.getElementById('modalImage');
+            const imageContainer = document.getElementById('imageContainer');
+            
+            // Mouse wheel zoom
+            imageContainer.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                zoom(delta);
+            });
+            
+            // Touch/Mouse drag to pan
+            modalImage.addEventListener('mousedown', startDrag);
+            modalImage.addEventListener('touchstart', startDrag);
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag);
+            
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+            
+            // Double click to zoom
+            modalImage.addEventListener('dblclick', function() {
+                if (currentZoom === 1) {
+                    zoomTo(2);
+                } else {
+                    resetZoom();
+                }
+            });
+        }
+        
+        function startDrag(e) {
+            if (currentZoom <= 1) return;
+            
+            isDragging = true;
+            modalImage.style.cursor = 'grabbing';
+            
+            const clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+            
+            startX = clientX - translateX;
+            startY = clientY - translateY;
+            
+            e.preventDefault();
+        }
+        
+        function drag(e) {
+            if (!isDragging || currentZoom <= 1) return;
+            
+            const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+            
+            translateX = clientX - startX;
+            translateY = clientY - startY;
+            
+            updateImageTransform();
+            e.preventDefault();
+        }
+        
+        function endDrag() {
+            isDragging = false;
+            const modalImage = document.getElementById('modalImage');
+            modalImage.style.cursor = currentZoom > 1 ? 'grab' : 'default';
+        }
+        
+        function zoom(delta) {
+            const newZoom = Math.max(0.5, Math.min(5, currentZoom + delta));
+            zoomTo(newZoom);
+        }
+        
+        function zoomIn() {
+            zoom(0.2);
+        }
+        
+        function zoomOut() {
+            zoom(-0.2);
+        }
+        
+        function zoomTo(level) {
+            currentZoom = level;
+            
+            // Reset position if zooming out to 1x or less
+            if (currentZoom <= 1) {
+                translateX = 0;
+                translateY = 0;
+                document.getElementById('modalImage').style.cursor = 'default';
+            } else {
+                document.getElementById('modalImage').style.cursor = 'grab';
+            }
+            
+            updateImageTransform();
+            updateZoomLevel();
+        }
+        
+        function resetZoom() {
+            zoomTo(1);
+        }
+        
+        function updateImageTransform() {
+            const modalImage = document.getElementById('modalImage');
+            modalImage.style.transform = `scale(${currentZoom}) translate(${translateX / currentZoom}px, ${translateY / currentZoom}px)`;
+        }
+        
+        function updateZoomLevel() {
+            const zoomLevelElement = document.querySelector('.zoom-level');
+            if (zoomLevelElement) {
+                zoomLevelElement.textContent = Math.round(currentZoom * 100) + '%';
+            }
+        }
+        
+        function toggleFullscreen() {
+            const modal = document.getElementById('imageModal');
+            
+            if (!document.fullscreenElement) {
+                modal.requestFullscreen().catch(err => {
+                    console.log('Error attempting to enable fullscreen:', err.message);
+                });
+            } else {
+                document.exitFullscreen();
+            }
         }
         
         function downloadImage() {
@@ -417,8 +577,24 @@ $whatsappLink = "https://wa.me/6289507410373?text={$whatsappText}";
         document.addEventListener('keydown', function(e) {
             const modal = document.getElementById('imageModal');
             if (modal.classList.contains('show')) {
-                if (e.key === 'Escape') {
-                    bootstrap.Modal.getInstance(modal).hide();
+                switch(e.key) {
+                    case 'Escape':
+                        bootstrap.Modal.getInstance(modal).hide();
+                        break;
+                    case '+':
+                    case '=':
+                        zoomIn();
+                        break;
+                    case '-':
+                        zoomOut();
+                        break;
+                    case '0':
+                        resetZoom();
+                        break;
+                    case 'f':
+                    case 'F':
+                        toggleFullscreen();
+                        break;
                 }
             }
         });
