@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentPage = window.location.pathname.split('/').pop();
         console.log('Current page:', currentPage);
         
-        if (currentPage === 'index.html' || currentPage === '') {
+        if (currentPage === 'index.php' || currentPage === 'index.html' || currentPage === '') {
             console.log('Loading products for homepage...');
             // Halaman home - cek total produk dulu, lalu tampilkan 6 pertama
             loadProducts().then(allProducts => {
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error loading settings:', error);
         // Fallback: load products anyway
         const currentPage = window.location.pathname.split('/').pop();
-        if (currentPage === 'index.html' || currentPage === '') {
+        if (currentPage === 'index.php' || currentPage === 'index.html' || currentPage === '') {
             loadProducts().then(allProducts => {
                 const totalProducts = allProducts.length;
                 const displayedProducts = allProducts.slice(0, 6);
